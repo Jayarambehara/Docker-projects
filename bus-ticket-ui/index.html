@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Busly · Premium Bus Booking</title>
+  <!-- Google Fonts & Font Awesome 6 (free) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400..700;1,14..32,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f5fe;
+      background-image: radial-gradient(circle at 10% 20%, rgba(26, 115, 232, 0.02) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(0, 200, 200, 0.02) 0%, transparent 60%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      margin: 0;
+    }
+
+    /* main glassmorphic card */
+    .booking-panel {
+      max-width: 1024px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 3.5rem;
+      padding: 2.8rem 2.8rem 2.2rem;
+      box-shadow: 0 40px 80px -20px rgba(0, 20, 40, 0.25),
+                  0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+      transition: box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* header */
+    .hero-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid rgba(26, 115, 232, 0.08);
+      padding-bottom: 1.2rem;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .title-group .icon-bus {
+      background: linear-gradient(145deg, #1a73e8, #0d47a1);
+      color: white;
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      font-size: 2rem;
+      box-shadow: 0 12px 24px -8px rgba(26, 115, 232, 0.3);
+      transition: 0.2s;
+    }
+
+    .title-group h1 {
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0b2b3f, #1a4d7a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .title-group h1 span {
+      font-weight: 300;
+      color: #4a6f8f;
+      -webkit-text-fill-color: #4a6f8f;
+      background: none;
+    }
+
+    .header-tag {
+      background: rgba(26, 115, 232, 0.1);
+      padding: 0.45rem 1.4rem;
+      border-radius: 60px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      color: #1a5a9c;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      border: 1px solid rgba(26, 115, 232, 0.15);
+      backdrop-filter: blur(4px);
+    }
+
+    .header-tag i {
+      color: #1a73e8;
+    }
+
+    /* bus list grid */
+    .bus-fleet {
+      display: flex;
+      flex-direction: column;
+      gap: 1.3rem;
+      margin-top: 0.5rem;
+    }
+
+    /* individual bus card — elevated */
+    .bus-card {
+      background: white;
+      border-radius: 2.2rem;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 8px 28px -6px rgba(0, 20, 40, 0.06), 0 2px 6px rgba(0,0,0,0.02);
+      transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+    }
+
+    .bus-card:hover {
+      transform: translateY(-6px) scale(1.005);
+      box-shadow: 0 25px 45px -12px rgba(26, 115, 232, 0.18);
+      border-color: rgba(26, 115, 232, 0.2);
+      background: white;
+    }
+
+    .bus-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .bus-info .route {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .bus-info .route h2 {
+      font-size: 1.5rem;
+      font-weight: 650;
+      color: #0f2b3f;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .route i {
+      color: #1a73e8;
+      font-size: 1.1rem;
+      opacity: 0.8;
+    }
+
+    .route .arrow-icon {
+      color: #b0cadd;
+      font-size: 1.2rem;
+      margin: 0 0.1rem;
+    }
+
+    .bus-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem 1.4rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #ecf3fe;
+      padding: 0.25rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1a4d7a;
+    }
+
+    .badge i {
+      font-size: 0.7rem;
+      color: #1a73e8;
+    }
+
+    .badge.green {
+      background: #e6f3ea;
+      color: #1b6d3e;
+    }
+    .badge.green i {
+      color: #2b8c4a;
+    }
+
+    .badge.gold {
+      background: #fef6e0;
+      color: #a67c1e;
+    }
+    .badge.gold i {
+      color: #d49b2b;
+    }
+
+    .time-info, .price-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.85rem;
+      color: #2d4b66;
+    }
+
+    .price-chip {
+      background: #eef4fa;
+      padding: 0.15rem 0.9rem;
+      border-radius: 40px;
+      font-weight: 600;
+      color: #0b2b3f;
+    }
+
+    .price-chip i {
+      color: #1a73e8;
+    }
+
+    .book-btn {
+      background: linear-gradient(145deg, #1a73e8, #1360c7);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.75rem 2.2rem;
+      border-radius: 60px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+      box-shadow: 0 10px 22px -8px rgba(26, 115, 232, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    .book-btn i {
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    .book-btn:hover {
+      background: linear-gradient(145deg, #1557b0, #0f4a9e);
+      transform: scale(1.03) translateY(-2px);
+      box-shadow: 0 16px 32px -6px rgba(26, 115, 232, 0.4);
+    }
+
+    .book-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* additional seat / rating micro */
+    .seat-info {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: #4f738e;
+      background: rgba(0,0,0,0.02);
+      padding: 0.1rem 0.6rem 0.1rem 0.4rem;
+      border-radius: 40px;
+    }
+
+    .seat-info i {
+      color: #1a73e8;
+    }
+
+    /* footer */
+    .action-footer {
+      margin-top: 2.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(0,0,0,0.03);
+      padding-top: 1.5rem;
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      color: #3d5e79;
+      font-size: 0.8rem;
+    }
+
+    .trust-badge i {
+      color: #1a73e8;
+      font-size: 0.9rem;
+    }
+
+    .trust-badge span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .offer-chip {
+      background: #1a73e8;
+      color: white;
+      padding: 0.3rem 1.2rem;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      box-shadow: 0 6px 12px -6px rgba(26, 115, 232, 0.25);
+    }
+
+    /* responsive */
+    @media (max-width: 800px) {
+      .booking-panel {
+        padding: 1.8rem 1.5rem;
+        border-radius: 2.4rem;
+      }
+      .title-group h1 {
+        font-size: 1.8rem;
+      }
+      .hero-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+      .bus-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.2rem;
+      }
+      .book-btn {
+        justify-content: center;
+        padding: 0.75rem 1.2rem;
+        width: 100%;
+      }
+      .bus-info .route h2 {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .title-group .icon-bus {
+        width: 46px;
+        height: 46px;
+        font-size: 1.6rem;
+        border-radius: 16px;
+      }
+      .title-group h1 {
+        font-size: 1.4rem;
+      }
+      .booking-panel {
+        padding: 1.2rem 1rem;
+      }
+      .bus-card {
+        padding: 1.2rem;
+      }
+      .bus-meta {
+        gap: 0.4rem 0.8rem;
+      }
+    }
+
+    /* extra micro-animation */
+    .bus-card:first-child .badge.gold {
+      background: #fff3d6;
+    }
+    .bus-card:first-child .badge.gold i {
+      color: #d49b2b;
+    }
+
+    /* pseudo "new" highlight */
+    .bus-card:nth-child(2) .badge::after {
+      content: "★ bestseller";
+      font-weight: 600;
+      color: #b45f1b;
+      margin-left: 0.4rem;
+      font-size: 0.65rem;
+      background: rgba(255, 215, 0, 0.2);
+      padding: 0 0.5rem;
+      border-radius: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="booking-panel">
+  
+  <!-- header with icon -->
+  <div class="hero-header">
+    <div class="title-group">
+      <div class="icon-bus"><i class="fas fa-bus"></i></div>
+      <h1>Bus<span>ly</span></h1>
+    </div>
+    <div class="header-tag">
+      <i class="fas fa-map-pin"></i> 3 routes · live
+      <i class="fas fa-circle" style="color: #2ecc71; font-size: 0.5rem; margin-left: 0.2rem;"></i>
+    </div>
+  </div>
+
+  <!-- bus fleet -->
+  <div class="bus-fleet">
+
+    <!-- 1. Hyderabad → Bangalore  (AC Sleeper) -->
+    <div class="bus-card">
+      <div class="bus-info">
+        <div class="route">
+          <h2><i class="fas fa-location-dot" style="color: #1a73e8;"></i> Hyderabad <i class="fas fa-arrow-right arrow-icon"></i> Bangalore</h2>
+        </div>
+        <div class="bus-meta">
+          <span class="badge gold"><i class="fas fa-bed"></i> AC Sleeper</span>
+          <span class="time-info"><i class="far fa-clock"></i> 10:30 PM · 8h</span>
+          <span class="price-chip"><i class="fas fa-tag"></i> ₹1,299</span>
+          <span class="seat-info"><i class="fas fa-chair"></i> 12 seats left</span>
+        </div>
+      </div>
+      <button class="book-btn" onclick="alert('✅ Booking confirmed for Hyderabad → Bangalore')">
+        <i class="fas fa-ticket"></i> Book Now
+      </button>
+    </div>
+
+    <!-- 2. Hyderabad → Chennai (Luxury) -->
+    <div class="bus-card">
+      <div class="bus-info">
+        <div class="route">
+          <h2><i class="fas fa-location-dot" style="color: #1a73e8;"></i> Hyderabad <i class="fas fa-arrow-right arrow-icon"></i> Chennai</h2>
+        </div>
+        <div class="bus-meta">
+          <span class="badge"><i class="fas fa-crown"></i> Luxury Bus</span>
+          <span class="time-info"><i class="far fa-clock"></i> 09:15 PM · 10h</span>
+          <span class="price-chip"><i class="fas fa-tag"></i> ₹1,499</span>
+          <span class="seat-info"><i class="fas fa-chair"></i> 8 seats left</span>
+        </div>
+      </div>
+      <button class="book-btn" onclick="alert('✅ Booking confirmed for Hyderabad → Chennai')">
+        <i class="fas fa-ticket"></i> Book Now
+      </button>
+    </div>
+
+    <!-- 3. Hyderabad → Vijayawada (Express) -->
+    <div class="bus-card">
+      <div class="bus-info">
+        <div class="route">
+          <h2><i class="fas fa-location-dot" style="color: #1a73e8;"></i> Hyderabad <i class="fas fa-arrow-right arrow-icon"></i> Vijayawada</h2>
+        </div>
+        <div class="bus-meta">
+          <span class="badge green"><i class="fas fa-bolt"></i> Express Bus</span>
+          <span class="time-info"><i class="far fa-clock"></i> 07:00 AM · 5h</span>
+          <span class="price-chip"><i class="fas fa-tag"></i> ₹799</span>
+          <span class="seat-info"><i class="fas fa-chair"></i> 20 seats left</span>
+        </div>
+      </div>
+      <button class="book-btn" onclick="alert('✅ Booking confirmed for Hyderabad → Vijayawada')">
+        <i class="fas fa-ticket"></i> Book Now
+      </button>
+    </div>
+
+  </div>
+
+  <!-- footer trust + extra -->
+  <div class="action-footer">
+    <div class="trust-badge">
+      <span><i class="fas fa-shield-alt"></i> secure booking</span>
+      <span><i class="fas fa-undo-alt"></i> free cancel</span>
+      <span><i class="fas fa-headset"></i> 24/7 support</span>
+    </div>
+    <div class="offer-chip">
+      <i class="fas fa-gift"></i> GET 10% OFF
+    </div>
+  </div>
+
+</div>
+
+<!-- minimal script for extra interactive feedback (optional) -->
+<script>
+  (function() {
+    // you could add more interactivity, but inline alerts already work
+    console.log('🚌 Busly — premium bus booking UI');
+    // extra: add ripple effect on buttons (optional)
+    const btns = document.querySelectorAll('.book-btn');
+    btns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        // tiny haptic feedback simulation (just for fun)
+        this.style.transform = 'scale(0.96)';
+        setTimeout(() => { this.style.transform = ''; }, 120);
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>>
