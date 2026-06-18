@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍽️ Feastly · Food Delivery</title>
+  <!-- Google Fonts + Font Awesome 6 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #f2f6fc;
+      background-image: radial-gradient(circle at 10% 20%, rgba(255, 107, 53, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(255, 187, 0, 0.03) 0%, transparent 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.8rem 1.2rem;
+    }
+
+    /* main glass card */
+    .app-container {
+      max-width: 1200px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 3.5rem;
+      padding: 2.2rem 2.5rem 2.5rem;
+      box-shadow: 0 50px 90px -25px rgba(0, 20, 40, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    /* --- HEADER --- */
+    .header-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid rgba(255, 107, 53, 0.08);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .logo-icon {
+      background: linear-gradient(145deg, #ff6b35, #e85a2a);
+      color: white;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      font-size: 1.8rem;
+      box-shadow: 0 10px 24px -6px rgba(255, 107, 53, 0.35);
+    }
+
+    .logo-area h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      background: linear-gradient(145deg, #1f2a3f, #2a3a55);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-area h1 span { font-weight: 300; -webkit-text-fill-color: #ff6b35; background: none; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .cashback-badge {
+      background: linear-gradient(145deg, #fef7e0, #fde9c8);
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #a56711;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid rgba(255, 187, 0, 0.2);
+    }
+    .cashback-badge i { color: #f5a623; }
+
+    .login-btn {
+      background: white;
+      border: 1px solid rgba(0,0,0,0.06);
+      padding: 0.5rem 1.5rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1f2a3f;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+    .login-btn:hover { background: #f8faff; border-color: #ff6b35; transform: scale(1.02); }
+    .login-btn i { color: #ff6b35; }
+
+    /* --- LOGIN MODAL --- */
+    .login-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.25s ease;
+    }
+    .login-modal.active { display: flex; }
+    .login-box {
+      background: white;
+      max-width: 400px;
+      width: 90%;
+      border-radius: 2.8rem;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: 0 40px 70px -20px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+      text-align: center;
+    }
+    .login-box h2 { font-size: 1.8rem; font-weight: 700; color: #1f2a3f; margin-bottom: 0.3rem; }
+    .login-box p { color: #5a6f88; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .login-box input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 2rem;
+      border: 1px solid #e2e9f2;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+    .login-box input:focus { outline: none; border-color: #ff6b35; box-shadow: 0 0 0 4px rgba(255,107,53,0.1); }
+    .login-box .login-submit {
+      width: 100%;
+      background: linear-gradient(145deg, #ff6b35, #e85a2a);
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.9rem;
+      border-radius: 3rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 10px 24px -6px rgba(255,107,53,0.3);
+    }
+    .login-box .login-submit:hover { transform: scale(1.02); background: #e85a2a; }
+    .login-close {
+      margin-top: 1rem;
+      background: none;
+      border: none;
+      color: #7a8fa5;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* --- MAIN GRID: menu + cart --- */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      margin-top: 0.8rem;
+    }
+    @media (max-width: 860px) {
+      .main-grid { grid-template-columns: 1fr; gap: 1.8rem; }
+      .app-container { padding: 1.5rem; }
+    }
+
+    /* menu section */
+    .menu-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2a3f;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+    }
+    .menu-section h2 i { color: #ff6b35; }
+
+    .food-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .food-card {
+      background: white;
+      border-radius: 2rem;
+      padding: 1.2rem 1rem 1.2rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      transition: 0.25s ease;
+      text-align: center;
+      backdrop-filter: blur(2px);
+    }
+    .food-card:hover { transform: translateY(-6px); box-shadow: 0 18px 30px -10px rgba(255,107,53,0.12); border-color: rgba(255,107,53,0.15); }
+
+    .food-card .emoji-big {
+      font-size: 2.8rem;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+    .food-card h3 { font-size: 1rem; font-weight: 700; color: #1f2a3f; }
+    .food-card .desc { font-size: 0.7rem; color: #6a7f98; margin: 0.1rem 0 0.4rem; }
+    .food-card .price { font-weight: 700; color: #1f2a3f; font-size: 1rem; }
+    .food-card .price small { font-weight: 400; color: #8a9fb5; font-size: 0.7rem; }
+
+    .add-btn {
+      background: #ff6b35;
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 0.4rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 6px 12px -4px rgba(255,107,53,0.2);
+    }
+    .add-btn:hover { background: #e85a2a; transform: scale(1.04); }
+
+    /* --- CART SECTION --- */
+    .cart-section {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(4px);
+      border-radius: 2.2rem;
+      padding: 1.5rem 1.8rem;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-section h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1f2a3f;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .cart-section h2 i { color: #ff6b35; }
+
+    .cart-items {
+      flex: 1;
+      min-height: 120px;
+      max-height: 340px;
+      overflow-y: auto;
+      margin-bottom: 0.8rem;
+      padding-right: 0.2rem;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.03);
+      font-size: 0.9rem;
+    }
+    .cart-item .item-name { font-weight: 500; color: #1f2a3f; }
+    .cart-item .item-qty { display: flex; align-items: center; gap: 0.4rem; }
+    .cart-item .item-qty button {
+      background: #eef2f8;
+      border: none;
+      border-radius: 40px;
+      width: 26px; height: 26px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.15s;
+      color: #1f2a3f;
+    }
+    .cart-item .item-qty button:hover { background: #ff6b35; color: white; }
+    .cart-item .item-price { font-weight: 600; color: #1f2a3f; }
+
+    .cart-total {
+      border-top: 2px solid rgba(255,107,53,0.1);
+      padding-top: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #1f2a3f;
+    }
+    .cart-total .cashback-note {
+      font-weight: 400;
+      font-size: 0.7rem;
+      color: #a56711;
+      background: #fef7e0;
+      padding: 0.1rem 0.8rem;
+      border-radius: 40px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: linear-gradient(145deg, #ff6b35, #e85a2a);
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.9rem;
+      border-radius: 3rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 0.6rem;
+      box-shadow: 0 10px 24px -6px rgba(255,107,53,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+    }
+    .checkout-btn:hover { transform: scale(1.02); background: #d9531f; }
+    .checkout-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .empty-cart { color: #7a8fa5; font-size: 0.9rem; text-align: center; padding: 1.5rem 0; }
+
+    /* --- CHECKOUT MODAL (congrats + cashback) --- */
+    .checkout-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+      animation: fadeIn 0.25s ease;
+    }
+    .checkout-modal.active { display: flex; }
+    .checkout-box {
+      background: white;
+      max-width: 420px;
+      width: 90%;
+      border-radius: 3rem;
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+      box-shadow: 0 50px 80px -20px rgba(0,0,0,0.3);
+      animation: slideUp 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+    }
+    .checkout-box .big-icon {
+      background: #2ecc71;
+      color: white;
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      margin: 0 auto 0.8rem;
+      box-shadow: 0 12px 30px -8px rgba(46, 204, 113, 0.3);
+    }
+    .checkout-box h2 { font-size: 1.8rem; font-weight: 700; color: #1f2a3f; }
+    .checkout-box .cashback-gift {
+      background: #fef7e0;
+      padding: 0.4rem 1.2rem;
+      border-radius: 60px;
+      display: inline-block;
+      font-weight: 700;
+      color: #a56711;
+      font-size: 0.9rem;
+      margin: 0.8rem 0 0.2rem;
+    }
+    .checkout-box .order-total {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #1f2a3f;
+      margin: 0.5rem 0 1rem;
+    }
+    .checkout-box .close-checkout {
+      background: #ff6b35;
+      border: none;
+      color: white;
+      font-weight: 700;
+      padding: 0.7rem 2.5rem;
+      border-radius: 60px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      box-shadow: 0 8px 20px -6px rgba(255,107,53,0.25);
+    }
+    .checkout-box .close-checkout:hover { background: #e85a2a; transform: scale(1.02); }
+
+    /* animations */
+    @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+    @keyframes slideUp { 0% { transform: translateY(25px) scale(0.96); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+
+    /* scroll */
+    .cart-items::-webkit-scrollbar { width: 4px; }
+    .cart-items::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px; }
+    .cart-items::-webkit-scrollbar-thumb { background: #ff6b35; border-radius: 10px; }
+
+    .user-greeting {
+      font-weight: 600;
+      color: #1f2a3f;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .user-greeting i { color: #ff6b35; }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- HEADER -->
+  <div class="header-row">
+    <div class="logo-area">
+      <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+      <h1>Feast<span>ly</span></h1>
+    </div>
+    <div class="header-actions">
+      <div class="cashback-badge"><i class="fas fa-coins"></i> 10% cashback</div>
+      <button class="login-btn" id="loginOpenBtn"><i class="fas fa-user-circle"></i> <span id="loginStatus">Login</span></button>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="main-grid">
+    <!-- MENU -->
+    <div class="menu-section">
+      <h2><i class="fas fa-bowl-food"></i> Today's specials</h2>
+      <div class="food-grid" id="foodMenu">
+        <!-- items injected via JS -->
+      </div>
+    </div>
+
+    <!-- CART -->
+    <div class="cart-section">
+      <h2><i class="fas fa-cart-shopping"></i> Your cart</h2>
+      <div class="cart-items" id="cartItems">
+        <div class="empty-cart">🍽️ Add some delicious items!</div>
+      </div>
+      <div class="cart-total">
+        <span>Total</span>
+        <span>
+          <span id="cartTotalPrice">₹0</span>
+          <span class="cashback-note"><i class="fas fa-gift"></i> ₹<span id="cashbackAmount">0</span> cb</span>
+        </span>
+      </div>
+      <button class="checkout-btn" id="checkoutBtn" disabled><i class="fas fa-check-circle"></i> Place order</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <h2>👋 Welcome back</h2>
+    <p>Login to get cashback & faster checkout</p>
+    <input type="text" id="loginName" placeholder="Your name" value="Aarav">
+    <input type="email" id="loginEmail" placeholder="Email" value="aarav@feastly.com">
+    <button class="login-submit" id="loginSubmitBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+    <button class="login-close" id="loginCloseBtn">Continue as guest</button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL (congrats + cashback) -->
+<div class="checkout-modal" id="checkoutModal">
+  <div class="checkout-box">
+    <div class="big-icon"><i class="fas fa-check"></i></div>
+    <h2>🎉 Order placed!</h2>
+    <div class="cashback-gift"><i class="fas fa-coins"></i> You earned ₹<span id="earnedCashback">0</span> cashback!</div>
+    <div class="order-total">Total paid: ₹<span id="orderTotalPaid">0</span></div>
+    <p style="color: #5a6f88; font-size: 0.85rem; margin-bottom: 1.2rem;">Your food is being prepared 🍳</p>
+    <button class="close-checkout" id="closeCheckoutBtn"><i class="fas fa-thumbs-up"></i> Awesome!</button>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- DATA ----------
+    const menuItems = [
+      { id: 1, name: "Margherita Pizza", emoji: "🍕", price: 299, desc: "Classic cheese" },
+      { id: 2, name: "Truffle Burger", emoji: "🍔", price: 399, desc: "With truffle sauce" },
+      { id: 3, name: "Sushi Platter", emoji: "🍣", price: 549, desc: "8 pcs assorted" },
+      { id: 4, name: "Pasta Alfredo", emoji: "🍝", price: 329, desc: "Creamy & rich" },
+      { id: 5, name: "Veggie Bowl", emoji: "🥗", price: 249, desc: "Fresh & healthy" },
+      { id: 6, name: "Chocolate Cake", emoji: "🍰", price: 189, desc: "With ganache" }
+    ];
+
+    // ---------- STATE ----------
+    let cart = {};          // { id: { qty, item } }
+    let totalItems = 0;
+    let loggedIn = false;
+    let userName = 'Guest';
+
+    // DOM refs
+    const foodMenuEl = document.getElementById('foodMenu');
+    const cartItemsEl = document.getElementById('cartItems');
+    const cartTotalPriceEl = document.getElementById('cartTotalPrice');
+    const cashbackAmountEl = document.getElementById('cashbackAmount');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const loginModal = document.getElementById('loginModal');
+    const loginOpenBtn = document.getElementById('loginOpenBtn');
+    const loginCloseBtn = document.getElementById('loginCloseBtn');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const loginStatus = document.getElementById('loginStatus');
+    const checkoutModal = document.getElementById('checkoutModal');
+    const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
+    const earnedCashbackEl = document.getElementById('earnedCashback');
+    const orderTotalPaidEl = document.getElementById('orderTotalPaid');
+
+    // ---------- RENDER MENU ----------
+    function renderMenu() {
+      foodMenuEl.innerHTML = menuItems.map(item => `
+        <div class="food-card">
+          <span class="emoji-big">${item.emoji}</span>
+          <h3>${item.name}</h3>
+          <div class="desc">${item.desc}</div>
+          <div class="price">₹${item.price} <small></small></div>
+          <button class="add-btn" data-id="${item.id}"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      `).join('');
+
+      // attach add events
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const id = parseInt(this.dataset.id);
+          const item = menuItems.find(i => i.id === id);
+          if (item) addToCart(item);
+        });
+      });
+    }
+
+    // ---------- CART OPERATIONS ----------
+    function addToCart(item) {
+      if (cart[item.id]) {
+        cart[item.id].qty += 1;
+      } else {
+        cart[item.id] = { qty: 1, item: item };
+      }
+      updateCartUI();
+    }
+
+    function changeQty(id, delta) {
+      if (!cart[id]) return;
+      const newQty = cart[id].qty + delta;
+      if (newQty <= 0) {
+        delete cart[id];
+      } else {
+        cart[id].qty = newQty;
+      }
+      updateCartUI();
+    }
+
+    function getTotal() {
+      let total = 0;
+      for (let key in cart) {
+        total += cart[key].qty * cart[key].item.price;
+      }
+      return total;
+    }
+
+    function getCashback(total) {
+      // 10% cashback
+      return Math.round(total * 0.1);
+    }
+
+    function updateCartUI() {
+      const total = getTotal();
+      const cashback = getCashback(total);
+      cartTotalPriceEl.textContent = `₹${total}`;
+      cashbackAmountEl.textContent = cashback;
+
+      // render cart items
+      const keys = Object.keys(cart);
+      if (keys.length === 0) {
+        cartItemsEl.innerHTML = `<div class="empty-cart">🍽️ Add some delicious items!</div>`;
+        checkoutBtn.disabled = true;
+      } else {
+        let html = '';
+        keys.forEach(id => {
+          const { qty, item } = cart[id];
+          html += `
+            <div class="cart-item">
+              <span class="item-name">${item.emoji} ${item.name}</span>
+              <div class="item-qty">
+                <button data-id="${id}" data-delta="-1">−</button>
+                <span>${qty}</span>
+                <button data-id="${id}" data-delta="1">+</button>
+              </div>
+              <span class="item-price">₹${qty * item.price}</span>
+            </div>
+          `;
+        });
+        cartItemsEl.innerHTML = html;
+        checkoutBtn.disabled = false;
+
+        // attach qty events
+        document.querySelectorAll('.cart-item .item-qty button').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const id = parseInt(this.dataset.id);
+            const delta = parseInt(this.dataset.delta);
+            changeQty(id, delta);
+          });
+        });
+      }
+    }
+
+    // ---------- CHECKOUT ----------
+    function placeOrder() {
+      const total = getTotal();
+      if (total === 0) return;
+      const cashback = getCashback(total);
+      // show modal
+      earnedCashbackEl.textContent = cashback;
+      orderTotalPaidEl.textContent = total;
+      checkoutModal.classList.add('active');
+
+      // clear cart
+      cart = {};
+      updateCartUI();
+    }
+
+    // ---------- LOGIN ----------
+    function setLogin(name) {
+      loggedIn = true;
+      userName = name.trim() || 'Guest';
+      loginStatus.textContent = userName;
+      loginStatus.style.fontWeight = '600';
+      loginModal.classList.remove('active');
+      // update login button icon
+      document.querySelector('.login-btn i').className = 'fas fa-user-check';
+    }
+
+    // ---------- EVENTS ----------
+    // Login open
+    loginOpenBtn.addEventListener('click', () => {
+      if (loggedIn) {
+        // if already logged in, show greeting or just logout? We'll allow re-login.
+        // For simplicity, we just show modal again.
+        loginModal.classList.add('active');
+      } else {
+        loginModal.classList.add('active');
+      }
+    });
+
+    loginCloseBtn.addEventListener('click', () => {
+      loginModal.classList.remove('active');
+    });
+
+    loginSubmitBtn.addEventListener('click', () => {
+      const nameInput = document.getElementById('loginName');
+      const name = nameInput.value.trim() || 'Aarav';
+      setLogin(name);
+    });
+
+    // close login on backdrop click
+    loginModal.addEventListener('click', (e) => {
+      if (e.target === loginModal) loginModal.classList.remove('active');
+    });
+
+    // Checkout
+    checkoutBtn.addEventListener('click', placeOrder);
+
+    // Close checkout modal
+    closeCheckoutBtn.addEventListener('click', () => {
+      checkoutModal.classList.remove('active');
+    });
+    checkoutModal.addEventListener('click', (e) => {
+      if (e.target === checkoutModal) checkoutModal.classList.remove('active');
+    });
+
+    // Init
+    renderMenu();
+    updateCartUI();
+
+    // prefill login with a default user
+    setTimeout(() => {
+      // if not logged in, set as guest but we keep login status as guest
+      if (!loggedIn) {
+        loginStatus.textContent = 'Guest';
+      }
+    }, 100);
+
+    // extra: keyboard ESC for modals
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (loginModal.classList.contains('active')) loginModal.classList.remove('active');
+        if (checkoutModal.classList.contains('active')) checkoutModal.classList.remove('active');
+      }
+    });
+
+    console.log('🍽️ Feastly ready — order with cashback!');
+  })();
+</script>
+
+</body>
+</html>
