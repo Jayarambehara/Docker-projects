@@ -1,0 +1,33 @@
+body {
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: white;
+    text-align: center;
+    font-family: Arial;
+}
+
+h1 {
+    color: #ffd700;
+    margin-top: 30px;
+}
+
+.flight {
+    background: white;
+    color: black;
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+button {
+    background: #0077ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: green;
+}
