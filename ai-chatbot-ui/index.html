@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Nova · AI Chatbot UI</title>
+  <!-- Google Fonts + Font Awesome 6 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: #0b0f1a;
+      background-image: radial-gradient(circle at 20% 30%, rgba(88, 130, 255, 0.04) 0%, transparent 60%),
+                        radial-gradient(circle at 80% 70%, rgba(255, 70, 200, 0.03) 0%, transparent 50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* main glass container */
+    .chat-container {
+      max-width: 1000px;
+      width: 100%;
+      height: 90vh;
+      max-height: 720px;
+      background: rgba(18, 25, 40, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 2.8rem;
+      box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: 0.2s;
+    }
+
+    /* ----- HEADER ----- */
+    .chat-header {
+      padding: 1.2rem 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      background: rgba(0, 0, 0, 0.15);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #6c5ce7, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: white;
+      box-shadow: 0 8px 20px -6px rgba(108, 92, 231, 0.4);
+    }
+
+    .header-left .info h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #f0f4ff;
+      letter-spacing: -0.01em;
+    }
+    .header-left .info p {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .header-left .info p i {
+      color: #4ade80;
+      font-size: 0.45rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.6rem;
+    }
+    .header-actions button {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.5);
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header-actions button:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* ----- MESSAGES AREA ----- */
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      scroll-behavior: smooth;
+    }
+
+    .messages-area::-webkit-scrollbar {
+      width: 4px;
+    }
+    .messages-area::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .messages-area::-webkit-scrollbar-thumb {
+      background: rgba(108, 92, 231, 0.4);
+      border-radius: 10px;
+    }
+
+    /* message bubbles */
+    .message {
+      display: flex;
+      gap: 0.8rem;
+      max-width: 85%;
+      animation: slideIn 0.3s ease;
+    }
+
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .message .bubble {
+      padding: 0.9rem 1.4rem;
+      border-radius: 1.8rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      word-break: break-word;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .message.ai .bubble {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+      border-bottom-left-radius: 0.4rem;
+    }
+
+    .message.user .bubble {
+      background: linear-gradient(145deg, #6c5ce7, #7c3aed);
+      color: white;
+      border-bottom-right-radius: 0.4rem;
+      box-shadow: 0 8px 24px -6px rgba(108, 92, 231, 0.3);
+    }
+
+    .message .avatar-small {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      color: white;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .message.user .avatar-small {
+      background: linear-gradient(145deg, #6c5ce7, #7c3aed);
+      border: none;
+    }
+
+    .message .time {
+      font-size: 0.6rem;
+      color: rgba(255, 255, 255, 0.2);
+      margin-top: 0.2rem;
+      display: block;
+    }
+
+    /* typing indicator */
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.2rem 0;
+      animation: slideIn 0.3s ease;
+    }
+    .typing-indicator.active {
+      display: flex;
+    }
+    .typing-indicator .dots {
+      display: flex;
+      gap: 0.3rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .typing-indicator .dots span {
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: bounce 1.4s infinite;
+    }
+    .typing-indicator .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+      30% { transform: translateY(-6px); opacity: 0.8; }
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ----- INPUT AREA ----- */
+    .chat-input-area {
+      padding: 1.2rem 2rem 1.6rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      background: rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-end;
+    }
+
+    .input-wrapper {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      padding: 0.1rem 0.1rem 0.1rem 1.2rem;
+      transition: 0.2s;
+    }
+    .input-wrapper:focus-within {
+      border-color: rgba(108, 92, 231, 0.3);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.05);
+    }
+
+    .input-wrapper input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.8rem 0.4rem;
+      font-size: 0.95rem;
+      color: #f0f4ff;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+    .input-wrapper input::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    .input-wrapper .send-btn {
+      background: linear-gradient(145deg, #6c5ce7, #7c3aed);
+      border: none;
+      color: white;
+      width: 46px;
+      height: 46px;
+      border-radius: 60px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 20px -6px rgba(108, 92, 231, 0.3);
+      flex-shrink: 0;
+    }
+    .input-wrapper .send-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(145deg, #7c3aed, #6c5ce7);
+    }
+    .input-wrapper .send-btn:active {
+      transform: scale(0.94);
+    }
+    .input-wrapper .send-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .attach-btn {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.3);
+      width: 44px;
+      height: 44px;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .attach-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ----- welcome / empty state ----- */
+    .empty-state {
+      text-align: center;
+      margin: auto;
+      padding: 1.5rem;
+      color: rgba(255, 255, 255, 0.2);
+    }
+    .empty-state .big-icon {
+      font-size: 3.4rem;
+      margin-bottom: 0.8rem;
+      opacity: 0.3;
+    }
+    .empty-state p {
+      font-size: 0.9rem;
+    }
+
+    /* response streaming cursor */
+    .cursor-blink {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: rgba(255, 255, 255, 0.4);
+      margin-left: 2px;
+      animation: blink 0.8s infinite;
+      vertical-align: text-bottom;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .chat-container {
+        height: 95vh;
+        max-height: none;
+        border-radius: 2rem;
+      }
+      .chat-header {
+        padding: 0.9rem 1.2rem;
+      }
+      .messages-area {
+        padding: 1rem 1.2rem;
+      }
+      .chat-input-area {
+        padding: 0.8rem 1.2rem 1.2rem;
+        flex-wrap: wrap;
+      }
+      .message {
+        max-width: 92%;
+      }
+      .header-left .info h2 {
+        font-size: 1rem;
+      }
+      .avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .message .bubble {
+        font-size: 0.85rem;
+        padding: 0.7rem 1rem;
+      }
+      .input-wrapper input {
+        font-size: 0.85rem;
+        padding: 0.6rem 0.2rem;
+      }
+      .input-wrapper .send-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-container">
+
+  <!-- HEADER -->
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="avatar"><i class="fas fa-robot"></i></div>
+      <div class="info">
+        <h2>Nova AI</h2>
+        <p><i class="fas fa-circle"></i> Online · ready to help</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button title="New chat" id="newChatBtn"><i class="fas fa-plus"></i></button>
+      <button title="Settings"><i class="fas fa-sliders-h"></i></button>
+    </div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div class="messages-area" id="messagesArea">
+    <div class="empty-state" id="emptyState">
+      <div class="big-icon">💬</div>
+      <p>Ask me anything — I'm here to help!</p>
+    </div>
+    <!-- messages will be injected here -->
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="avatar-small" style="background: rgba(255,255,255,0.04);"><i class="fas fa-robot" style="font-size:0.7rem; color: rgba(255,255,255,0.4);"></i></div>
+      <div class="dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT -->
+  <div class="chat-input-area">
+    <button class="attach-btn" title="Attach"><i class="fas fa-paperclip"></i></button>
+    <div class="input-wrapper">
+      <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+      <button class="send-btn" id="sendBtn"><i class="fas fa-arrow-up"></i></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function() {
+    // ---------- DOM refs ----------
+    const messagesArea = document.getElementById('messagesArea');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const emptyState = document.getElementById('emptyState');
+    const newChatBtn = document.getElementById('newChatBtn');
+
+    // ---------- State ----------
+    let isProcessing = false;
+    let messageCount = 0;
+
+    // ---------- AI responses (simulated) ----------
+    const aiReplies = [
+      "That's a great question! Let me think about it... 🤔",
+      "I'm so glad you asked! Here's what I think: 🌟",
+      "Interesting! Let me break it down for you:",
+      "Sure thing! The answer is simpler than you might think.",
+      "I love this topic! Here's my take on it:",
+      "Got it! Let me give you a detailed explanation.",
+      "Hmm, let me analyze that for you. 💡",
+      "Absolutely! Here's what I know about that.",
+      "Great question! The short answer is yes — but let me elaborate.",
+      "I'm here to help! Let me share some insights."
+    ];
+
+    function getRandomReply() {
+      return aiReplies[Math.floor(Math.random() * aiReplies.length)];
+    }
+
+    // ---------- Helper: add message to UI ----------
+    function addMessage(text, sender, isStreaming = false) {
+      // hide empty state
+      if (emptyState) emptyState.style.display = 'none';
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar-small';
+      if (sender === 'ai') {
+        avatar.innerHTML = '<i class="fas fa-robot" style="font-size:0.7rem;"></i>';
+      } else {
+        avatar.innerHTML = '<i class="fas fa-user" style="font-size:0.7rem;"></i>';
+      }
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.textContent = text;
+
+      // if streaming, add cursor
+      if (isStreaming) {
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor-blink';
+        bubble.appendChild(cursor);
+      }
+
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(bubble);
+
+      // insert before typing indicator
+      messagesArea.insertBefore(messageDiv, typingIndicator);
+
+      // scroll
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+      return messageDiv;
+    }
+
+    // ---------- Simulate AI streaming response ----------
+    function simulateAIResponse(userMessage) {
+      if (isProcessing) return;
+      isProcessing = true;
+      sendBtn.disabled = true;
+      chatInput.disabled = true;
+
+      // show typing
+      typingIndicator.classList.add('active');
+      messagesArea.scrollTop = messagesArea.scrollHeight;
+
+      // pick a reply
+      const reply = getRandomReply();
+      // sometimes add a bit more length
+      const fullReply = reply + (Math.random() > 0.5 ? ' Let me know if you need more details! 🚀' : '');
+
+      // simulate delay + streaming
+      const typingDelay = 400 + Math.random() * 600;
+
+      setTimeout(() => {
+        // hide typing
+        typingIndicator.classList.remove('active');
+
+        // create AI message with cursor (streaming effect)
+        const aiMsg = addMessage('', 'ai', true);
+        const bubble = aiMsg.querySelector('.bubble');
+        let displayedText = '';
+        let index = 0;
+
+        // stream character by character
+        const streamInterval = setInterval(() => {
+          if (index < fullReply.length) {
+            displayedText += fullReply[index];
+            // remove cursor, add text
+            const cursor = bubble.querySelector('.cursor-blink');
+            if (cursor) cursor.remove();
+            bubble.textContent = displayedText;
+            // re-add cursor if not finished
+            if (index < fullReply.length - 1) {
+              const newCursor = document.createElement('span');
+              newCursor.className = 'cursor-blink';
+              bubble.appendChild(newCursor);
+            }
+            index++;
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+          } else {
+            // finished
+            clearInterval(streamInterval);
+            // remove cursor
+            const cursor = bubble.querySelector('.cursor-blink');
+            if (cursor) cursor.remove();
+            bubble.textContent = fullReply;
+            isProcessing = false;
+            sendBtn.disabled = false;
+            chatInput.disabled = false;
+            chatInput.focus();
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+          }
+        }, 25 + Math.random() * 20); // speed variation
+
+      }, typingDelay);
+    }
+
+    // ---------- Handle user message ----------
+    function handleUserMessage() {
+      const text = chatInput.value.trim();
+      if (!text || isProcessing) return;
+
+      // add user message
+      addMessage(text, 'user');
+      messageCount++;
+
+      // clear input
+      chatInput.value = '';
+
+      // simulate AI response
+      simulateAIResponse(text);
+    }
+
+    // ---------- Event listeners ----------
+    sendBtn.addEventListener('click', handleUserMessage);
+
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleUserMessage();
+      }
+    });
+
+    // New chat: clear messages (keep empty state)
+    newChatBtn.addEventListener('click', () => {
+      // remove all messages except typing indicator and empty state
+      const children = messagesArea.children;
+      const toRemove = [];
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (child.id !== 'emptyState' && child.id !== 'typingIndicator') {
+          toRemove.push(child);
+        }
+      }
+      toRemove.forEach(el => el.remove());
+      // reset empty state
+      if (emptyState) emptyState.style.display = 'block';
+      // reset typing
+      typingIndicator.classList.remove('active');
+      // reset state
+      isProcessing = false;
+      sendBtn.disabled = false;
+      chatInput.disabled = false;
+      chatInput.value = '';
+      chatInput.focus();
+      messageCount = 0;
+    });
+
+    // Auto-focus on load
+    chatInput.focus();
+
+    // Welcome message after a short delay (only if empty)
+    setTimeout(() => {
+      if (messageCount === 0 && emptyState && emptyState.style.display !== 'none') {
+        // add a friendly AI greeting
+        addMessage("👋 Hi there! I'm Nova. Ask me anything — from tech to travel, I'm here to chat!", 'ai');
+        messageCount++;
+      }
+    }, 600);
+
+    console.log('✨ Nova AI Chatbot ready!');
+  })();
+</script>
+
+</body>
+</html>
